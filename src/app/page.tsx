@@ -205,7 +205,7 @@ function App() {
                 alt="BNB"
               />
               <span className="text-sm font-medium text-gray-600">
-                {networkInfo?.name}
+                {networkInfo?.name?.toUpperCase()}
               </span>
             </div>
 

@@ -245,13 +245,13 @@ function App() {
       )}
 
       {response?.status === 1 && (
-        <div className="flex items-center gap-x-2 pt-10 justify-center">
-          <p className="text-center text-xl text-green-800">
+        <div className="flex items-center gap-x-2 pt-10 justify-center flex-col md:flex-row">
+          <p className="text-center text-xl text-green-700">
             {" "}
             Transaction is successful
           </p>
           <a
-            className="text-center text-xl text-green-400 underline"
+            className="text-center text-xl text-green-800 underline"
             href={`${chainConfig.blockExplorerUrl}/tx/${response.hash}`}
             target="_blank"
           >

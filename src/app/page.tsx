@@ -21,8 +21,8 @@ import { Button } from "./components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./components/ui/card";
 import { Input } from "./components/ui/input";
 import WalletNotConnected from "./components/WalletConnect";
-import RPC from "./ethersRPC";
-// import RPC from "./viemRPC";
+// import RPC from "./ethersRPC";
+import RPC from "./viemRPC";
 // import RPC from "./web3RPC";
 
 const clientId = process.env.NEXT_PUBLIC_CLIENT_ID; // get from https://dashboard.web3auth.io
@@ -66,12 +66,9 @@ function App() {
   const [amount, setAmount] = useState("");
   const [recipientAddress, setRecipientAddress] = useState("");
   const [sending, setSending] = useState(false);
-
+  const [walletBalance, setWalletBalance] = useState("");
   const [response, setResponse] = useState<any>({});
-  const [info, setInfo] = useState({
-    bal: "0.0",
-    add: "0x",
-  });
+  const [address, setAddress] = useState("0x0");
   useEffect(() => {
     const init = async () => {
       try {
@@ -96,26 +93,44 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const getInfo = async () => {
-      try {
-        if (provider) {
-          const add = await RPC.getAccounts(provider);
-          const bal = await RPC.getBalance(provider);
-          const networkInfo = await RPC.getChainId(provider);
+    const getAccounts = async () => {
+      if (!provider) {
+        console.log("provider not initialized yet");
+        return;
+      }
+      const address = await RPC.getAccounts(provider);
+      console.log(address);
 
-          console.log(networkInfo);
-          setNetworkInfo(networkInfo);
-          setInfo({
-            bal,
-            add,
-          });
-        }
-      } catch (error) {
-        console.log(error);
+      setAddress(address[0]);
+    };
+    getAccounts();
+  }, [provider, loggedIn]);
+
+  useEffect(() => {
+    const getBalance = async () => {
+      if (!provider) {
+        console.log("provider not initialized yet");
+        return;
+      }
+      if (address) {
+        const balance = await RPC.getBalance(provider);
+        setWalletBalance(balance);
       }
     };
-    getInfo();
-  }, [provider, response?.status]);
+    getBalance();
+  }, [address, loggedIn]);
+
+  useEffect(() => {
+    const getBalance = async () => {
+      if (!provider) {
+        console.log("provider not initialized yet");
+        return;
+      }
+      const networkInfo = await RPC.getChainId(provider);
+      console.log(networkInfo);
+    };
+    getBalance();
+  }, [provider]);
 
   const login = async () => {
     const web3authProvider = await web3auth.connect();
@@ -130,30 +145,13 @@ function App() {
   //   uiConsole(user);
   // };
 
+  // const networkInfo = await RPC.getChainId(provider);
+
   const logout = async () => {
     await web3auth.logout();
     setProvider(null);
     setLoggedIn(false);
   };
-
-  // Check the RPC file for the implementation
-  // const getAccounts = async () => {
-  //   if (!provider) {
-  //     uiConsole("provider not initialized yet");
-  //     return;
-  //   }
-  //   const address = await RPC.getAccounts(provider);
-  //   uiConsole(address);
-  // };
-
-  // const getBalance = async () => {
-  //   if (!provider) {
-  //     uiConsole("provider not initialized yet");
-  //     return;
-  //   }
-  //   const balance = await RPC.getBalance(provider);
-  //   uiConsole(balance);
-  // };
 
   // const signMessage = async () => {
   //   if (!provider) {
@@ -185,8 +183,6 @@ function App() {
     }
   };
 
-  console.log(response);
-
   if (!loggedIn) {
     return <WalletNotConnected onConnect={login} />;
   }
@@ -204,9 +200,11 @@ function App() {
                 width={20}
                 alt="BNB"
               />
-            {networkInfo&& <span className="text-sm font-medium text-gray-600">
-                {networkInfo?.name?.toUpperCase()}
-              </span>}
+              {/* {networkInfo && (
+                <span className="text-sm font-medium text-gray-600">
+                  {networkInfo?.name?.toUpperCase()}
+                </span>
+              )} */}
             </div>
 
             <Button
@@ -223,16 +221,16 @@ function App() {
             <div className="mt-4 flex items-center justify-between text-sm">
               <div className="flex items-center space-x-2">
                 <span className="text-gray-500">Wallet Address:</span>
-                {info.add.length > 2 && (
-                  <span className="font-mono">{`${info.add.slice(
+                {address && (
+                  <span className="font-mono">{`${address.slice(
                     0,
-                    6
-                  )}...${info.add.slice(-4)}`}</span>
+                    4
+                  )}...${address.slice(-4)}`}</span>
                 )}
               </div>
               <div className="flex items-center space-x-2">
                 <span className="text-gray-500">Balance:</span>
-                <span className="font-medium">{info.bal} TOKEN</span>
+                <span className="font-medium">{walletBalance}BNB</span>
               </div>
             </div>
           )}
@@ -245,11 +243,13 @@ function App() {
           {response.info.error.message.split(":")[2]}
         </p>
       )}
-      {recipientAddress&&info.add.toLocaleLowerCase() === recipientAddress.toLocaleLowerCase() && (
-        <p className="text-center text-xl text-red-700 pt-10">
-          You cannot send token to your self. Use another wallet addresss
-        </p>
-      )}
+      {recipientAddress &&
+        address.toLocaleLowerCase() ===
+          recipientAddress.toLocaleLowerCase() && (
+          <p className="text-center text-xl text-red-700 pt-10">
+            You cannot send token to your self. Use another wallet addresss
+          </p>
+        )}
       {response?.status === 1 && (
         <div className="flex items-center gap-x-2 pt-10 justify-center flex-col md:flex-row">
           <p className="text-center text-xl text-green-700">
@@ -307,7 +307,7 @@ function App() {
                   !recipientAddress ||
                   !amount ||
                   parseFloat(amount) <= 0 || // Validate that amount is greater than 0
-                  parseFloat(amount).toString() > info.bal
+                  parseFloat(amount).toString() > walletBalance
                 }
               >
                 <Send className="h-4 w-4" />

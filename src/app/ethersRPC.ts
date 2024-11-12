@@ -28,13 +28,13 @@ const getAccounts = async (provider: IProvider): Promise<any> => {
     }
 }
 
-const getBalance = async (provider: IProvider): Promise<string> => {
+const getBalance = async ({ provider, address }: { provider: IProvider, address: string }): Promise<string> => {
     try {
         const ethersProvider = new ethers.BrowserProvider(provider);
-        const signer = await ethersProvider.getSigner();
+        // const signer = await ethersProvider.getSigner();
 
-        // Get user's Ethereum public address
-        const address = signer.getAddress();
+        // // Get user's Ethereum public address
+        // const address = signer.getAddress();
 
         // Get user's balance in ether
         const balance = ethers.formatEther(

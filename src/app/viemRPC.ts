@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable import/no-anonymous-default-export */
 import { createWalletClient, createPublicClient, custom, formatEther, parseEther } from 'viem'
-import { mainnet, polygonAmoy, sepolia } from 'viem/chains'
+import { mainnet, polygonAmoy, sepolia, bscTestnet } from 'viem/chains'
 import type { IProvider } from "@web3auth/base";
 
 const getViewChain = (provider: IProvider) => {
@@ -12,10 +12,14 @@ const getViewChain = (provider: IProvider) => {
             return polygonAmoy;
         case "0xaa36a7":
             return sepolia;
+        case "0x61":
+            return bscTestnet;
         default:
             return mainnet;
     }
 }
+
+
 
 const getChainId = async (provider: IProvider): Promise<any> => {
     try {

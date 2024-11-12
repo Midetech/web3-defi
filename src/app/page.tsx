@@ -127,7 +127,7 @@ function App() {
         return;
       }
       const networkInfo = await RPC.getChainId(provider);
-      console.log(networkInfo);
+      setNetworkInfo(networkInfo);
     };
     getBalance();
   }, [provider]);
@@ -172,7 +172,7 @@ function App() {
     setSending(true);
     const transactionReceipt = await RPC.sendTransaction({
       provider,
-      address: recipientAddress,
+      destination: recipientAddress,
       tokenAmount: amount,
     });
     setResponse(transactionReceipt);
@@ -182,6 +182,7 @@ function App() {
       setAmount("");
     }
   };
+  console.log(networkInfo);
 
   if (!loggedIn) {
     return <WalletNotConnected onConnect={login} />;
@@ -200,11 +201,11 @@ function App() {
                 width={20}
                 alt="BNB"
               />
-              {/* {networkInfo && (
+              {networkInfo && (
                 <span className="text-sm font-medium text-gray-600">
-                  {networkInfo?.name?.toUpperCase()}
+                  {networkInfo.name}
                 </span>
-              )} */}
+              )}
             </div>
 
             <Button

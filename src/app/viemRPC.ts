@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable import/no-anonymous-default-export */
-import { createWalletClient, createPublicClient, custom, formatEther, parseEther } from 'viem'
+import { createWalletClient, createPublicClient, custom, formatEther, parseEther, extractChain } from 'viem'
 import { mainnet, polygonAmoy, sepolia, bscTestnet } from 'viem/chains'
 import type { IProvider } from "@web3auth/base";
+
+import * as chains from 'viem/chains'
 
 const getViewChain = (provider: IProvider) => {
     switch (provider.chainId) {
@@ -31,7 +33,12 @@ const getChainId = async (provider: IProvider): Promise<any> => {
         console.log(address)
 
         const chainId = await walletClient.getChainId()
-        return chainId.toString();
+        const optimism = extractChain({
+            chains: Object.values(chains),
+            id: chainId as 1 | 5 | 7 | 8 | 10 | 14 | 15 | 16 | 19 | 20 | 21 | 24 | 25 | 30 | 31 | 40 | 56 | 88 | 96 | 168 | 240 | 248 | 80002 | 11155111 | 97 | 11124 | 787 | 47 | 10241024 | 10241025 | 888888888 | 28122024
+        })
+        return optimism;
+        // return chainId.toString();
     } catch (error) {
         return error;
     }
@@ -74,7 +81,11 @@ const getBalance = async (provider: IProvider): Promise<string> => {
     }
 }
 
-const sendTransaction = async (provider: IProvider): Promise<any> => {
+const sendTransaction = async ({ provider, destination, tokenAmount }: {
+    provider: IProvider,
+    destination: string,
+    tokenAmount: string
+}): Promise<any> => {
     try {
         const publicClient = createPublicClient({
             chain: getViewChain(provider),
@@ -87,8 +98,7 @@ const sendTransaction = async (provider: IProvider): Promise<any> => {
         });
 
         // data for the transaction
-        const destination = "0x40e1c367Eca34250cAF1bc8330E9EddfD403fC56";
-        const amount = parseEther("0.0001");
+        const amount = parseEther(tokenAmount);
         const address = await walletClient.getAddresses();
 
         // Submit transaction to the blockchain

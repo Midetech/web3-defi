@@ -204,9 +204,9 @@ function App() {
                 width={20}
                 alt="BNB"
               />
-              <span className="text-sm font-medium text-gray-600">
+            {networkInfo&& <span className="text-sm font-medium text-gray-600">
                 {networkInfo?.name?.toUpperCase()}
-              </span>
+              </span>}
             </div>
 
             <Button
@@ -245,7 +245,7 @@ function App() {
           {response.info.error.message.split(":")[2]}
         </p>
       )}
-      {info.add.toLocaleLowerCase === recipientAddress.toLocaleLowerCase && (
+      {recipientAddress&&info.add.toLocaleLowerCase() === recipientAddress.toLocaleLowerCase() && (
         <p className="text-center text-xl text-red-700 pt-10">
           You cannot send token to your self. Use another wallet addresss
         </p>

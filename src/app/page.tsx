@@ -243,7 +243,11 @@ function App() {
           {response.info.error.message.split(":")[2]}
         </p>
       )}
-
+      {info.add.toLocaleLowerCase === recipientAddress.toLocaleLowerCase && (
+        <p className="text-center text-xl text-red-700 pt-10">
+          You cannot send token to your self. Use another wallet addresss
+        </p>
+      )}
       {response?.status === 1 && (
         <div className="flex items-center gap-x-2 pt-10 justify-center flex-col md:flex-row">
           <p className="text-center text-xl text-green-700">

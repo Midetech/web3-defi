@@ -70,7 +70,7 @@ function App() {
   const [response, setResponse] = useState<any>({});
   const [info, setInfo] = useState({
     bal: "0.0",
-    add: "",
+    add: "0x",
   });
   useEffect(() => {
     const init = async () => {
@@ -219,14 +219,16 @@ function App() {
             </Button>
           </div>
 
-          {loggedIn && info.add && (
+          {loggedIn && (
             <div className="mt-4 flex items-center justify-between text-sm">
               <div className="flex items-center space-x-2">
                 <span className="text-gray-500">Wallet Address:</span>
-                <span className="font-mono">{`${info.add.slice(
-                  0,
-                  6
-                )}...${info.add.slice(-4)}`}</span>
+                {info.add.length > 2 && (
+                  <span className="font-mono">{`${info.add.slice(
+                    0,
+                    6
+                  )}...${info.add.slice(-4)}`}</span>
+                )}
               </div>
               <div className="flex items-center space-x-2">
                 <span className="text-gray-500">Balance:</span>

@@ -118,10 +118,10 @@ function App() {
       }
     };
     getBalance();
-  }, [address, loggedIn]);
+  }, [address, loggedIn, response]);
 
   useEffect(() => {
-    const getBalance = async () => {
+    const getNetwork = async () => {
       if (!provider) {
         console.log("provider not initialized yet");
         return;
@@ -129,8 +129,8 @@ function App() {
       const networkInfo = await RPC.getChainId(provider);
       setNetworkInfo(networkInfo);
     };
-    getBalance();
-  }, [provider, response]);
+    getNetwork();
+  }, [provider]);
 
   const login = async () => {
     const web3authProvider = await web3auth.connect();

@@ -231,7 +231,9 @@ function App() {
               </div>
               <div className="flex items-center space-x-2">
                 <span className="text-gray-500">Balance:</span>
-                <span className="font-medium">{walletBalance}BNB</span>
+                <span className="font-medium">
+                  {Number(walletBalance).toFixed(2)}BNB
+                </span>
               </div>
             </div>
           )}

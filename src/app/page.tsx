@@ -130,7 +130,7 @@ function App() {
       setNetworkInfo(networkInfo);
     };
     getBalance();
-  }, [provider]);
+  }, [provider, response]);
 
   const login = async () => {
     const web3authProvider = await web3auth.connect();
@@ -175,14 +175,15 @@ function App() {
       destination: recipientAddress,
       tokenAmount: amount,
     });
-    setResponse(transactionReceipt);
+    console.log(transactionReceipt);
+
+    setResponse(JSON.parse(transactionReceipt));
     setSending(false);
-    if (transactionReceipt.status) {
+    if (transactionReceipt.status || transactionReceipt.includes("success")) {
       setRecipientAddress("");
       setAmount("");
     }
   };
-  console.log(networkInfo);
 
   if (!loggedIn) {
     return <WalletNotConnected onConnect={login} />;
@@ -253,7 +254,7 @@ function App() {
             You cannot send token to your self. Use another wallet addresss
           </p>
         )}
-      {response?.status === 1 && (
+      {response.status === "success" && (
         <div className="flex items-center gap-x-2 pt-10 justify-center flex-col md:flex-row">
           <p className="text-center text-xl text-green-700">
             {" "}
@@ -261,7 +262,7 @@ function App() {
           </p>
           <a
             className="text-center text-xl text-green-800 underline"
-            href={`${chainConfig.blockExplorerUrl}/tx/${response.hash}`}
+            href={`${chainConfig.blockExplorerUrl}/tx/${response.transactionHash}`}
             target="_blank"
           >
             Check Tnx on Explorer

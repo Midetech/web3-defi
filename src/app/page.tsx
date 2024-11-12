@@ -63,7 +63,11 @@ function App() {
   const [provider, setProvider] = useState<IProvider | null>(null);
   const [loggedIn, setLoggedIn] = useState(false);
   const [networkInfo, setNetworkInfo] = useState<any>();
+  const [amount, setAmount] = useState("");
+  const [recipientAddress, setRecipientAddress] = useState("");
+  const [sending, setSending] = useState(false);
 
+  const [response, setResponse] = useState<any>({});
   const [info, setInfo] = useState({
     bal: "0.0",
     add: "",
@@ -111,7 +115,7 @@ function App() {
       }
     };
     getInfo();
-  }, [provider]);
+  }, [provider, response?.status]);
 
   const login = async () => {
     const web3authProvider = await web3auth.connect();
@@ -160,12 +164,6 @@ function App() {
   //   uiConsole(signedMessage);
   // };
 
-  const [amount, setAmount] = useState("");
-  const [recipientAddress, setRecipientAddress] = useState("");
-  const [sending, setSending] = useState(false);
-
-  const [response, setResponse] = useState<any>({});
-
   const sendTransaction = async () => {
     setResponse({});
     if (!provider) {
@@ -181,6 +179,10 @@ function App() {
     });
     setResponse(transactionReceipt);
     setSending(false);
+    if (transactionReceipt.status) {
+      setRecipientAddress("");
+      setAmount("");
+    }
   };
 
   console.log(response);
@@ -293,7 +295,14 @@ function App() {
               <Button
                 onClick={sendTransaction}
                 className="w-full flex items-center justify-center space-x-2 !h-12"
-                disabled={!loggedIn || sending}
+                disabled={
+                  !loggedIn ||
+                  sending ||
+                  !recipientAddress ||
+                  !amount ||
+                  parseFloat(amount) <= 0 || // Validate that amount is greater than 0
+                  parseFloat(amount).toString() > info.bal
+                }
               >
                 <Send className="h-4 w-4" />
                 {sending ? (

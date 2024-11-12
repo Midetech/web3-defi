@@ -83,7 +83,7 @@ const getBalance = async (provider: IProvider): Promise<string> => {
 
 const sendTransaction = async ({ provider, destination, tokenAmount }: {
     provider: IProvider,
-    destination: string,
+    destination: any,
     tokenAmount: string
 }): Promise<any> => {
     try {

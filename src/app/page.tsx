@@ -66,7 +66,7 @@ function App() {
 
   const [info, setInfo] = useState({
     bal: "0.0",
-    add: "0x",
+    add: "",
   });
   useEffect(() => {
     const init = async () => {
@@ -217,7 +217,7 @@ function App() {
             </Button>
           </div>
 
-          {loggedIn && (
+          {loggedIn && info.add && (
             <div className="mt-4 flex items-center justify-between text-sm">
               <div className="flex items-center space-x-2">
                 <span className="text-gray-500">Wallet Address:</span>

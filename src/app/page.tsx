@@ -13,10 +13,9 @@ import {
 import { getDefaultExternalAdapters } from "@web3auth/default-evm-adapter";
 import { EthereumPrivateKeyProvider } from "@web3auth/ethereum-provider";
 import { Web3Auth, Web3AuthOptions } from "@web3auth/modal";
-import { useEffect, useState } from "react";
-
 import { Send, Wallet } from "lucide-react";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import { Button } from "./components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./components/ui/card";
 import { Input } from "./components/ui/input";
@@ -36,6 +35,7 @@ const clientId = process.env.NEXT_PUBLIC_CLIENT_ID; // get from https://dashboar
 // idHex: "0x61",
 // rpc: "https://soft-ancient-tree.bsc-testnet.discover.quiknode.pro/a07b98a85542347bf8168930b1903504969f85ac/",
 // explorer: "https://testnet.bscscan.com",
+
 const chainConfig = {
   chainNamespace: CHAIN_NAMESPACES.EIP155,
   chainId: "0x61",
@@ -186,7 +186,11 @@ function App() {
   };
 
   if (!loggedIn) {
-    return <WalletNotConnected onConnect={login} />;
+    return (
+      <div className="min-h-screen flex justify-center items-center">
+        <WalletNotConnected onConnect={login} />
+      </div>
+    );
   }
 
   return (

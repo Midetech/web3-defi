@@ -228,10 +228,7 @@ function App() {
               <div className="flex items-center space-x-2">
                 <span className="text-gray-500">Wallet Address:</span>
                 {address && (
-                  <span className="font-mono">{`${address.slice(
-                    0,
-                    4
-                  )}...${address.slice(-4)}`}</span>
+                  <span className="font-mono">{`${address}`}</span>
                 )}
               </div>
               <div className="flex items-center space-x-2">

@@ -227,9 +227,7 @@ function App() {
             <div className="mt-4 flex items-center justify-between text-sm">
               <div className="flex items-center space-x-2">
                 <span className="text-gray-500">Wallet Address:</span>
-                {address && (
-                  <span className="font-mono">{`${address}`}</span>
-                )}
+                {address && <span className="font-mono">{address}</span>}
               </div>
               <div className="flex items-center space-x-2">
                 <span className="text-gray-500">Balance:</span>
